@@ -26,119 +26,122 @@
 <div class="container-fluid">
     <div class="row min-vh-100">
         <div class="col-md-2">
-            <div class="nav flex-column nav-pills mt-2" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <div class="nav flex-column nav-pills mt-2 container-fluid" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 <a sec:authorize="hasAnyAuthority('ROLE_ADMIN')" class="nav-item nav-link active" id="nav-home-tab-p" data-toggle="tab" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">
                     Admin
                 </a>
-                <a sec:authorize="hasAuthority('ROLE_USER')" class="nav-item nav-link active" id="v-pills-profile-tab" data-toggle="tab" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">
-                    User
-                </a>
+                <a sec:authorize="hasAnyAuthority('ROLE_USER')" class="nav-item nav-link  " id="nav-profile-tab-p" data-toggle="tab" href="#v-pills-profile" role="tab"
+                    aria-controls="nav-profile" aria-selected="false">
+                User
+            </a>
             </div>
         </div>
         <div class="col-md-10"
              style="background: #edeef0">
-            <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
-                 aria-labelledby="nav-home-tab-p">
-                <h2>Admin panel</h2>
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a id="nav-home-tab" class="nat-item nav-link active" data-toggle="tab" href="#users_table">Users table</a>
-                    </li>
-                    <li class="nav-item">
-                        <a id="nav-profile-tab" class="nav-item nav-link" data-toggle="tab" href="#new_user">New User</a>
-                    </li>
-                </ul>
-                <!-- Tab panes -->
-                <div class="tab-content">
-                    <div id="users_table" class="tab-pane show active">
-                        <h4 class="m-2">All users</h4>
-                        <div class="row bg-light container">
-                            <div class="container m-3">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Login</th>
-                                    <th>Password</th>
-                                    <th>Role</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="user : ${users}">
-                                    <td th:text="${user.id}"></td>
-                                    <td th:text="${user.login}"></td>
-                                    <td th:text="${user.password}"></td>
-                                    <td th:text="${user.roles}"></td>
-                                    <td><a th:data-target="'#modalEdit'+${user.id}" th:value="${user.id}" data-toggle="modal" class="btn btn-info text-white">Edit</a></td>
-                                    <td><a th:data-target="'#modalDelete'+${user.id}" th:value="${user.id}" data-toggle="modal" class="btn btn-danger text-white">Delete</a></td>
-                                </tr>
-                                </tbody>
-                            </table>
+            <div class="tab-content" id="nav-tabContent-p">
+                <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+                     aria-labelledby="nav-home-tab-p">
+                    <h2>Admin panel</h2>
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a id="nav-home-tab" class="nat-item nav-link active" data-toggle="tab" href="#users_table">Users table</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="nav-profile-tab" class="nav-item nav-link" data-toggle="tab" href="#new_user">New User</a>
+                        </li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div id="users_table" class="tab-pane show active">
+                            <h4 class="m-2">All users</h4>
+                            <div class="row bg-light container">
+                                <div class="container m-3">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Login</th>
+                                        <th>Password</th>
+                                        <th>Role</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="user : ${users}">
+                                        <td th:text="${user.id}"></td>
+                                        <td th:text="${user.login}"></td>
+                                        <td th:text="${user.password}"></td>
+                                        <td th:text="${user.roles}"></td>
+                                        <td><a th:data-target="'#modalEdit'+${user.id}" th:value="${user.id}" data-toggle="modal" class="btn btn-info text-white">Edit</a></td>
+                                        <td><a th:data-target="'#modalDelete'+${user.id}" th:value="${user.id}" data-toggle="modal" class="btn btn-danger text-white">Delete</a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div id="new_user" class="tab-pane fade border rounded" role="tabpanel" aria-labelledby="nav-profile-tab">
-                        <h4 class="m-2">Add New User</h4>
-                        <div class="container-fluid bg-light">
-                            <div class="row justify-content-center p-3">
-                                <div class="col-4">
-                                    <form th:action="@{/adduser}" method="post">
-                                        <div class="form-group text-center font-weight-bold">
-                                            <label for="login">Login</label>
-                                            <input type="text" class="form-control" id="login" name="login">
-                                        </div>
-                                        <div class="form-group text-center font-weight-bold">
-                                            <label for="password">Password</label>
-                                            <input type="text" class="form-control" id="password" name="password">
-                                        </div>
-                                        <div class="form-group text-center font-weight-bold">
-                                            <label for="rolesAdd">Role</label>
-                                            <select id="rolesAdd" class="custom-select" name="role_id" multiple>
-                                                <option value="1">USER</option>
-                                                <option value="2">ADMIN</option>
-                                            </select>
-                                        </div>
-                                        <button type="submit" class="btn btn-success d-block mx-auto">Add New User</button>
-                                    </form>
+                        <div id="new_user" class="tab-pane fade border rounded" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <h4 class="m-2">Add New User</h4>
+                            <div class="container-fluid bg-light">
+                                <div class="row justify-content-center p-3">
+                                    <div class="col-4">
+                                        <form th:action="@{/adduser}" method="post">
+                                            <div class="form-group text-center font-weight-bold">
+                                                <label for="login">Login</label>
+                                                <input type="text" class="form-control" id="login" name="login">
+                                            </div>
+                                            <div class="form-group text-center font-weight-bold">
+                                                <label for="password">Password</label>
+                                                <input type="text" class="form-control" id="password" name="password">
+                                            </div>
+                                            <div class="form-group text-center font-weight-bold">
+                                                <label for="rolesAdd">Role</label>
+                                                <select id="rolesAdd" class="custom-select" name="role_id" multiple>
+                                                    <option value="1" selected>USER</option>
+                                                    <option value="2">ADMIN</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-success d-block mx-auto">Add New User</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div sec:authorize="hasAnyAuthority('ROLE_USER')" class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                <div class="container ">
-                    <div class="row">
-                        <h2 class="m-2">User information page</h2>
-                    </div>
-                    <div class="row border rounded">
-                        <div class="d-flex align-items-center ml-2">
-                            <h4 class="m-2">About user</h4>
+                <div sec:authorize="hasAnyAuthority('ROLE_USER')" class="tab-pane fade show" id="v-pills-profile" role="tabpanel" aria-labelledby="nav-profile-tab-p">
+                    <div class="container ">
+                        <div class="row">
+                            <h2 class="m-2">User information page</h2>
                         </div>
-                    </div>
-                    <div class="row" style="background-color: white">
-                        <div class="container m-3">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Login</th>
-                                    <th>Password</th>
-                                    <th>Role</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td th:text="${user.id}"/>
-                                    <td th:text="${user.login}" />
-                                    <td th:text="${user.password}" />
-                                    <td th:text="${user.roles}"/>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div class="row border rounded">
+                            <div class="d-flex align-items-center ml-2">
+                                <h4 class="m-2">About user</h4>
+                            </div>
+                        </div>
+                        <div class="row" style="background-color: white">
+                            <div class="container m-3">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Login</th>
+                                        <th>Password</th>
+                                        <th>Role</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td th:text="${user.id}"/>
+                                        <td th:text="${user.login}" />
+                                        <td th:text="${user.password}" />
+                                        <td th:text="${user.roles}"/>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -175,7 +178,7 @@
                                 <div class="form-group text-center font-weight-bold">
                                     <label for="rolesEdit">Role</label>
                                     <select id="rolesEdit" class="custom-select" name="role_id" multiple>
-                                        <option value="1">USER</option>
+                                        <option value="1" selected>USER</option>
                                         <option value="2">ADMIN</option>
                                     </select>
                                 </div>

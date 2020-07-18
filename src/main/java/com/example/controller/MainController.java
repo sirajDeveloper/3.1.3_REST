@@ -39,7 +39,6 @@ public class MainController {
 
     @GetMapping("admin")
     public String showUsersTable(ModelMap model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
         model.addAttribute("user", session.getAttribute("user"));
         model.addAttribute("users", userService.getAllUsers());
         return "index.html";
@@ -51,7 +50,7 @@ public class MainController {
     }
 
     @PostMapping("adduser")
-    public String addUser(@RequestParam(value = "role_id") Long roleId,
+    public String addUser(@RequestParam(value = "role_id", required = false) Long roleId,
                           @Validated User user, BindingResult result,
                           ModelMap model) {
         if (result.hasErrors()) {
