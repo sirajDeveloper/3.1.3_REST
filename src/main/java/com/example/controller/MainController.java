@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.example.model.Role;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -11,7 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.example.model.User;
-import com.example.service.UserService;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -39,9 +37,13 @@ public class MainController {
 
     @GetMapping("admin")
     public String showUsersTable(ModelMap model, HttpSession session) {
-        model.addAttribute("user", session.getAttribute("user"));
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            user = new User();
+        }
+        model.addAttribute("user", user);
         model.addAttribute("users", userService.getAllUsers());
-        return "index.html";
+        return "admin";
     }
 
     @GetMapping("signup")
@@ -50,16 +52,17 @@ public class MainController {
     }
 
     @PostMapping("adduser")
-    public String addUser(@RequestParam(value = "role_id", required = false) Long roleId,
+    public String addUser(@RequestParam(value = "role_id") Set<Long> roleId,
                           @Validated User user, BindingResult result,
                           ModelMap model) {
         if (result.hasErrors()) {
             return "add-user";
         }
-        user.setRoles(Collections.singleton(userService.findByRole(roleId)));
+        user.setRoles(userService.findByRole(roleId));
+        user.setStringRoles(userService.setStringRoles(user));
         userService.addUser(user);
         model.addAttribute("users", userService.getAllUsers());
-        return "index";
+        return "admin";
     }
 
 
@@ -71,14 +74,14 @@ public class MainController {
     }
 
     @PostMapping("update/{id}")
-    public String updateUser(@RequestParam(value = "role_id") Long roleId,
+    public String updateUser(@RequestParam(value = "role_id") Set<Long> roleId,
                              @PathVariable("id") long id, @Validated User user,
                              BindingResult result, Model model, HttpSession session) {
         if (result.hasErrors()) {
             user.setId(id);
             return "update-user";
         }
-        user.setRoles(Collections.singleton(userService.findByRole(roleId)));
+        user.setRoles(userService.findByRole(roleId));
         userService.updateUser(user);
         model.addAttribute("user", session.getAttribute("user"));
         model.addAttribute("users", userService.getAllUsers());

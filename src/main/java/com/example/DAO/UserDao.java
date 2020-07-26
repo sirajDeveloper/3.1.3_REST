@@ -10,4 +10,5 @@ public interface UserDao {
     void deleteUser(User user);
     void updateUser(User user);
     User getUserByName(String name);
+    boolean isExistUser(String name);
 }

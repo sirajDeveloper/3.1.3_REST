@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.DAO.UserDaoImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,9 +11,10 @@ import com.example.DAO.UserDao;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final UserDao userDao;
+    private UserDao userDao;
 
-    public UserDetailsServiceImpl(UserDao userDao) {
+    @Autowired
+    public void setUserDao(UserDaoImpl userDao) {
         this.userDao = userDao;
     }
 

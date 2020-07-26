@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,16 @@ public class RoleDaoImpl implements RoleDao {
         TypedQuery<Role> query = entityManager.createQuery("from Role where id = :id", Role.class);
         query.setParameter("id", id);
         return query.getSingleResult();
+    }
+
+    @Override
+    public Set<Role> findByRole(Set<?> roleId) {
+        Set<Role> roleSet = new HashSet<>();
+        TypedQuery<Role> query = entityManager.createQuery("from Role where id = :id", Role.class);
+        roleId.forEach(role -> {
+            query.setParameter("id", Long.parseLong((String) role));
+            roleSet.add(query.getSingleResult());});
+        return roleSet;
     }
 
     @Override

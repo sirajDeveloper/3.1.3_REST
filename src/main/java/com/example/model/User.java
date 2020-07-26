@@ -1,11 +1,19 @@
 package com.example.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -22,9 +30,13 @@ public class User implements UserDetails {
     @Column
     private String password;
 
+    @Column
+    private String stringRoles;
+
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @Column
     private Set<Role> roles;
 
     public User() {
@@ -58,6 +70,14 @@ public class User implements UserDetails {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getStringRoles() {
+        return stringRoles;
+    }
+
+    public void setStringRoles(String stringRoles) {
+        this.stringRoles = stringRoles;
     }
 
     public Set<Role> getRoles() {
@@ -95,5 +115,18 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(login, user.login);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(login);
     }
 }

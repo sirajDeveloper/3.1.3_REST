@@ -1,6 +1,10 @@
 package com.example.service;
 
+import com.example.DAO.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.DAO.RoleDao;
@@ -18,7 +22,7 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserDaoImpl userDao;
+    private UserDao userDao;
 
     @Autowired
     private RoleDao roleDao;
@@ -40,6 +44,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void addUser(User user) {
+    if (!userDao.isExistUser(user.getUsername()))
         userDao.addUser(user);
     }
 
@@ -81,7 +86,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public Set<Role> findByRole(Set<?> roleId) {
+        return roleDao.findByRole(roleId);
+    }
+
+    @Override
+    @Transactional
     public List<Role> getAllRoles() {
         return roleDao.getAllRoles();
+    }
+
+    @Override
+    public String setStringRoles(User user) {
+        StringBuilder sb = new StringBuilder();
+        user.getRoles().forEach(role -> {
+            if (role.equals(roleDao.findByRole(2L))) {
+                sb.append("ADMIN");
+            } else {
+                sb.append("USER");
+            }
+            sb.append(", ");
+        });
+        sb.deleteCharAt(sb.length()-2);
+        return sb.toString();
     }
 }
