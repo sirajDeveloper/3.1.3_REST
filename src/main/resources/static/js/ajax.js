@@ -1,3 +1,5 @@
+const option = $("<option></option>");
+const select = $("<select disabled></select>").attr("name", "roleIds");
 let buttonEditUser;
 let buttonDeleteUser;
 let allUsers;
@@ -89,18 +91,17 @@ let getUser = function (id) {
 }
 
 function editUser() {
+    let user = {
+        id: $("#idUserUpdate").val(),
+        login: $("#loginUserUpdate").val(),
+        password: $("#passwordUserUpdate").val(),
+        roleIds: $("#rolesEdit").val()
+    }
+
     $.ajax("rest/admin/update", {
-        method: "post",
-        data:
-            {
-                user: JSON.stringify(
-                    {
-                        id: $("#idUserUpdate").val(),
-                        login: $("#loginUserUpdate").val(),
-                        password: $("#passwordUserUpdate").val()
-                    }),
-                roleId: JSON.stringify($("#rolesEdit").val())
-            },
+        method: "put",
+        contentType: "application/json",
+        data: JSON.stringify(user),
         dataType: "json",
         success: function (msg) {
 
@@ -113,15 +114,9 @@ function editUser() {
     $("#modalEdit").modal('hide');
 }
 
-function editUserUnselectRoles() {
-    $("[name=roleOption]").attr("selected", false);
-
-}
-
 function deleteUser() {
-    $.ajax("rest/admin/delete", {
-        method: "post",
-        data: {id: $("#idUserDelete").val()},
+    $.ajax("rest/admin/delete/" + $("#idUserDelete").val(), {
+        method: "delete",
         dataType: "text",
         success: function (msg) {
             $("#tr_" + msg).children().remove();
@@ -131,17 +126,15 @@ function deleteUser() {
 }
 
 function addUser() {
+    let user = {
+        login: $("#addLogin").val(),
+        password: $("#addPassword").val(),
+        roleIds: $("#addRoles").val()
+    }
     $.ajax("rest/admin/adduser", {
         method: "post",
-        data:
-            {
-                user: JSON.stringify(
-                    {
-                        login: $("#addLogin").val(),
-                        password: $("#addPassword").val()
-                    }),
-                roleId: JSON.stringify($("#addRoles").val())
-            },
+        contentType: "application/json",
+        data: JSON.stringify(user),
         dataType: "json",
         success: function (msg) {
             addUserInTable(msg)

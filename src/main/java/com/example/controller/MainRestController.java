@@ -4,8 +4,10 @@ import com.example.model.Role;
 import com.example.model.User;
 import com.example.service.UserService;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,38 +20,31 @@ public class MainRestController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private Gson gson;
-
     @GetMapping
     public ResponseEntity<List<User>> getUsers() {
         List<User> users = userService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return ResponseEntity.ok().body(users);
     }
 
-    @PostMapping("admin/update")
-    public ResponseEntity<User> editUser(String user, String roleId) {
-        User userFromJson = gson.fromJson(user, User.class);
-        Set<Long> roleListFromJson = gson.fromJson(roleId, HashSet.class);
-        userFromJson.setRoles(userService.findByRole(roleListFromJson));
-        userFromJson.setStringRoles(userService.setStringRoles(userFromJson));
-        userService.updateUser(userFromJson);
-        return new ResponseEntity<>(userFromJson, HttpStatus.OK);
+    @PutMapping("admin/update")
+    public ResponseEntity<User> editUser(@RequestBody User user) {
+        user.setRoles(userService.findByRole(user.getRoleIds()));
+        user.setStringRoles(userService.setStringRoles(user));
+        userService.updateUser(user);
+        return ResponseEntity.ok().body(user);
     }
 
     @PostMapping("/admin/adduser")
-    public ResponseEntity<User> addUser(String user, String roleId) {
-        User userFromJson = gson.fromJson(user, User.class);
-        Set<Long> roleListFromJson = gson.fromJson(roleId, HashSet.class);
-        userFromJson.setRoles(userService.findByRole(roleListFromJson));
-        userFromJson.setStringRoles(userService.setStringRoles(userFromJson));
-        userService.addUser(userFromJson);
-        return new ResponseEntity<>(userFromJson, HttpStatus.OK);
+    public ResponseEntity<User> addUser(@RequestBody User user) {
+        user.setRoles(userService.findByRole(user.getRoleIds()));
+        user.setStringRoles(userService.setStringRoles(user));
+        userService.addUser(user);
+        return ResponseEntity.ok().body(user);
     }
 
-    @PostMapping("/admin/delete")
-    public ResponseEntity<String> deleteUser(String id) {
-        userService.deleteUser(userService.findById(Long.parseLong(id)));
-        return new ResponseEntity<>(id, HttpStatus.OK);
+    @DeleteMapping("/admin/delete/{id}")
+    public ResponseEntity<Long> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(userService.findById(id));
+        return ResponseEntity.ok().body(id);
     }
 }

@@ -39,6 +39,9 @@ public class User implements UserDetails {
     @Column
     private Set<Role> roles;
 
+    @Transient
+    private Set<Long> roleIds;
+
     public User() {
     }
 
@@ -86,6 +89,14 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Set<Long> getRoleIds() {
+        return roleIds;
+    }
+
+    public void setRoleIds(Set<Long> roleIds) {
+        this.roleIds = roleIds;
     }
 
     @Override
