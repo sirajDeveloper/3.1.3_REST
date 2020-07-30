@@ -1,5 +1,7 @@
 package com.example.service;
 
+import com.example.DTO.PostUserDto;
+import com.example.DTO.PutUserDto;
 import com.example.model.Role;
 import com.example.model.User;
 
@@ -20,4 +22,9 @@ public interface UserService {
     Set<Role> findByRole(Set<?> roleId);
     List<Role> getAllRoles();
     String setStringRoles(User user);
+    User convertFromDtoToEntity(PostUserDto postUserDto);
+    User convertFromDtoToEntity(PutUserDto putUserDto);
+    PostUserDto convertToPostUserDto(User user);
+    PutUserDto convertToPutUserDto(User user);
+    List<PostUserDto> convertToDtoList(List<User> users);
 }

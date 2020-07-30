@@ -1,6 +1,8 @@
 package com.example.service;
 
 import com.example.DAO.UserDao;
+import com.example.DTO.PostUserDto;
+import com.example.DTO.PutUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +19,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -109,5 +112,46 @@ public class UserServiceImpl implements UserService {
         });
         sb.deleteCharAt(sb.length()-2);
         return sb.toString();
+    }
+
+    public User convertFromDtoToEntity(PostUserDto postUserDto) {
+        User user = new User();
+        user.setLogin(postUserDto.getLogin());
+        user.setPassword(postUserDto.getPassword());
+        user.setRoles(findByRole(postUserDto.getRoleIds()));
+        return user;
+    }
+
+    @Override
+    public User convertFromDtoToEntity(PutUserDto putUserDto) {
+        User user = new User();
+        user.setId(putUserDto.getId());
+        user.setLogin(putUserDto.getLogin());
+        user.setPassword(putUserDto.getPassword());
+        user.setRoles(findByRole(putUserDto.getRoleIds()));
+        return user;
+    }
+
+    public PostUserDto convertToPostUserDto(User user) {
+        PostUserDto postUserDto = new PostUserDto(user.getId(),
+                                                    user.getLogin(),
+                                                    user.getPassword());
+        postUserDto.setStringRoles(setStringRoles(user));
+        return postUserDto;
+    }
+
+    @Override
+    public PutUserDto convertToPutUserDto(User user) {
+        PutUserDto putUserDto = new PutUserDto(user.getId(),
+                                                user.getLogin(),
+                                                user.getPassword());
+        putUserDto.setStringRoles(setStringRoles(user));
+        return putUserDto;
+    }
+
+    public List<PostUserDto> convertToDtoList(List<User> users) {
+        return users.stream()
+                .map(this::convertToPostUserDto)
+                .collect(Collectors.toList());
     }
 }

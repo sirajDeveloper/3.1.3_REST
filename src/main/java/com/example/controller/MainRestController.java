@@ -1,5 +1,7 @@
 package com.example.controller;
 
+import com.example.DTO.PostUserDto;
+import com.example.DTO.PutUserDto;
 import com.example.model.Role;
 import com.example.model.User;
 import com.example.service.UserService;
@@ -21,25 +23,25 @@ public class MainRestController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<PostUserDto>> getUsers() {
         List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok().body(users);
+        return ResponseEntity.ok().body(userService.convertToDtoList(users));
     }
 
     @PutMapping("admin/update")
-    public ResponseEntity<User> editUser(@RequestBody User user) {
-        user.setRoles(userService.findByRole(user.getRoleIds()));
-        user.setStringRoles(userService.setStringRoles(user));
+    public ResponseEntity<PutUserDto> editUser(@RequestBody PutUserDto putUserDto) {
+        User user = userService.convertFromDtoToEntity(putUserDto);
         userService.updateUser(user);
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(userService
+                .convertToPutUserDto(userService.findById(user.getId())));
     }
 
     @PostMapping("/admin/adduser")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-        user.setRoles(userService.findByRole(user.getRoleIds()));
-        user.setStringRoles(userService.setStringRoles(user));
+    public ResponseEntity<PostUserDto> addUser(@RequestBody PostUserDto postUserDto) {
+        User user = userService.convertFromDtoToEntity(postUserDto);
         userService.addUser(user);
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(userService
+                .convertToPostUserDto(userService.findById(user.getId())));
     }
 
     @DeleteMapping("/admin/delete/{id}")

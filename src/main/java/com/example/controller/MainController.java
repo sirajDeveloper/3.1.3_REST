@@ -59,7 +59,7 @@ public class MainController {
             return "add-user";
         }
         user.setRoles(userService.findByRole(roleId));
-        user.setStringRoles(userService.setStringRoles(user));
+        /*user.setStringRoles(userService.setStringRoles(user));*/
         userService.addUser(user);
         model.addAttribute("users", userService.getAllUsers());
         return "admin";
