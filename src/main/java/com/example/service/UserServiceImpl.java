@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
         Set<Role> rolesSet = roleDao.findByRole(putUserDto.getRoleIds());
         user.setRoles(rolesSet);
         userDao.updateUser(user);
-
+    }
 
     @Override
     public User getUserByName(String name) {
