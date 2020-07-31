@@ -10,12 +10,14 @@ import java.util.List;
 import java.util.Set;
 
 public interface UserService {
-    List<User> getAllUsers();
+    List<PostUserDto> getAllUsers();
     User findById(Long id);
-    void addUser(User user);
+    void addUser(PostUserDto postUserDto);
     void deleteUser(User user);
-    void updateUser(User user);
+    void updateUser(PutUserDto putUserDto);
     User getUserByName(String name);
+    PostUserDto getPostUserDtoByName(String name);
+    PutUserDto getPutUserDtoByName(String name);
     void addUserRoles(Long userId, String userRoles);
     Role findByRole(String role);
     Role findByRole(Long id);

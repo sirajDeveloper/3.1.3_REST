@@ -24,24 +24,19 @@ public class MainRestController {
 
     @GetMapping
     public ResponseEntity<List<PostUserDto>> getUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok().body(userService.convertToDtoList(users));
+        return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
     @PutMapping("admin/update")
     public ResponseEntity<PutUserDto> editUser(@RequestBody PutUserDto putUserDto) {
-        User user = userService.convertFromDtoToEntity(putUserDto);
-        userService.updateUser(user);
-        return ResponseEntity.ok().body(userService
-                .convertToPutUserDto(userService.findById(user.getId())));
+        userService.updateUser(putUserDto);
+        return ResponseEntity.ok().body(userService.getPutUserDtoByName(putUserDto.getLogin()));
     }
 
     @PostMapping("/admin/adduser")
     public ResponseEntity<PostUserDto> addUser(@RequestBody PostUserDto postUserDto) {
-        User user = userService.convertFromDtoToEntity(postUserDto);
-        userService.addUser(user);
-        return ResponseEntity.ok().body(userService
-                .convertToPostUserDto(userService.findById(user.getId())));
+        userService.addUser(postUserDto);
+        return ResponseEntity.ok().body(userService.getPostUserDtoByName(postUserDto.getLogin()));
     }
 
     @DeleteMapping("/admin/delete/{id}")

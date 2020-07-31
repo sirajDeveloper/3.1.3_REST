@@ -34,8 +34,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public List<User> getAllUsers() {
-        return userDao.getAllUsers();
+    public List<PostUserDto> getAllUsers() {
+        List<User> usersList = userDao.getAllUsers();
+        return usersList.stream().map(user -> {
+            PostUserDto postUserDto = new PostUserDto();
+            postUserDto.setId(user.getId());
+            postUserDto.setLogin(user.getLogin());
+            postUserDto.setPassword(user.getPassword());
+            postUserDto.setStringRoles(setStringRoles(user));
+            return postUserDto;
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -46,8 +54,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void addUser(User user) {
-    if (!userDao.isExistUser(user.getUsername()))
+    public void addUser(PostUserDto postUserDto) {
+        User user = new User();
+        user.setLogin(postUserDto.getLogin());
+        user.setPassword(postUserDto.getPassword());
+        Set<Role> rolesSet = roleDao.findByRole(postUserDto.getRoleIds());
+        user.setRoles(rolesSet);
+    if (!userDao.isExistUser(user.getLogin()))
         userDao.addUser(user);
     }
 
@@ -59,14 +72,45 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(User user) {
+    public void updateUser(PutUserDto putUserDto) {
+        User user = new User();
+        user.setId(putUserDto.getId());
+        user.setLogin(putUserDto.getLogin());
+        user.setPassword(putUserDto.getPassword());
+        Set<Role> rolesSet = roleDao.findByRole(putUserDto.getRoleIds());
+        user.setRoles(rolesSet);
         userDao.updateUser(user);
+
+
+    @Override
+    public User getUserByName(String name) {
+        return userDao.getUserByName(name);
     }
 
     @Override
     @Transactional
-    public User getUserByName(String name) {
-        return userDao.getUserByName(name);
+    public PostUserDto getPostUserDtoByName(String name)
+    {
+        User user = userDao.getUserByName(name);
+        PostUserDto postUserDto = new PostUserDto();
+        postUserDto.setId(user.getId());
+        postUserDto.setLogin(user.getLogin());
+        postUserDto.setPassword(user.getPassword());
+        postUserDto.setStringRoles(setStringRoles(user));
+        return postUserDto;
+    }
+
+    @Override
+    @Transactional
+    public PutUserDto getPutUserDtoByName(String name)
+    {
+        User user = userDao.getUserByName(name);
+        PutUserDto putUserDto = new PutUserDto();
+        putUserDto.setId(user.getId());
+        putUserDto.setLogin(user.getLogin());
+        putUserDto.setPassword(user.getPassword());
+        putUserDto.setStringRoles(setStringRoles(user));
+        return putUserDto;
     }
 
     @Override

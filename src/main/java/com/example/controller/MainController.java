@@ -25,7 +25,7 @@ public class MainController {
         return "login";
     }
 
-    @GetMapping("user")
+    /*@GetMapping("user")
     public String user(ModelMap modelMap, Authentication auth) {
         if (auth.isAuthenticated()) {
             String userName = auth.getName();
@@ -33,7 +33,7 @@ public class MainController {
             modelMap.addAttribute("user", user);
         }
         return "user"; 
-    }
+    }*/
 
     @GetMapping("admin")
     public String showUsersTable(ModelMap model, HttpSession session) {
@@ -46,7 +46,7 @@ public class MainController {
         return "admin";
     }
 
-    @GetMapping("signup")
+    /*@GetMapping("signup")
     public String showSignUpForm(User user, ModelMap model) {
         return "add-user";
     }
@@ -59,7 +59,7 @@ public class MainController {
             return "add-user";
         }
         user.setRoles(userService.findByRole(roleId));
-        /*user.setStringRoles(userService.setStringRoles(user));*/
+        *//*user.setStringRoles(userService.setStringRoles(user));*//*
         userService.addUser(user);
         model.addAttribute("users", userService.getAllUsers());
         return "admin";
@@ -95,5 +95,5 @@ public class MainController {
         model.addAttribute("user", session.getAttribute("user"));
         model.addAttribute("users", userService.getAllUsers());
         return "index";
-    }
+    }*/
 }

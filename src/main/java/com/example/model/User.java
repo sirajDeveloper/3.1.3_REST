@@ -30,22 +30,22 @@ public class User implements UserDetails {
     @Column
     private String password;
 
-    @Column
-    private String stringRoles;
-
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     @Column
     private Set<Role> roles;
 
-    @Transient
-    private Set<Long> roleIds;
-
     public User() {
     }
 
     public User(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
+
+    public User(Long id, String login, String password) {
+        this.id = id;
         this.login = login;
         this.password = password;
     }
@@ -75,28 +75,12 @@ public class User implements UserDetails {
         return password;
     }
 
-    public String getStringRoles() {
-        return stringRoles;
-    }
-
-    public void setStringRoles(String stringRoles) {
-        this.stringRoles = stringRoles;
-    }
-
     public Set<Role> getRoles() {
         return roles;
     }
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    public Set<Long> getRoleIds() {
-        return roleIds;
-    }
-
-    public void setRoleIds(Set<Long> roleIds) {
-        this.roleIds = roleIds;
     }
 
     @Override
