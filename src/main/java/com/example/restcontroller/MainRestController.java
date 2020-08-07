@@ -1,15 +1,9 @@
-package com.example.controller;
+package com.example.restcontroller;
 
 import com.example.DTO.PostUserDto;
 import com.example.DTO.PutUserDto;
-import com.example.model.Role;
-import com.example.model.User;
 import com.example.service.UserService;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
